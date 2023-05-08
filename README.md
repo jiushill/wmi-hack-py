@@ -1,4 +1,15 @@
 # WMI-HACK ##
+
+## 更新 ##
+* 基本功能实现
+* 通过base64编码传入vbs，vbs base64解码避免中文或者其他语言造成latin-1编码问题  
+* 更新RID劫持/用户启用或者禁用   
+* 执行过程清除   
+
+## 其他 ## 
+1. 纯属写来练手,感谢离爹提供的帮助，推荐小离的项目:https://github.com/XiaoliChan/wmiexec-Pro    
+2. vbs代码大量来源于网上
+
 ## 需求 ##
 python3  
 impacket模块
@@ -42,6 +53,7 @@ wmi_query.py
 * 空密码登录启用
 * 用户RID查询
 * RID劫持
+* 执行过程清除
 
 ```text
 Usage:
@@ -75,7 +87,8 @@ python wmi_query -i <target> -u <username> -p <password> --stop_vbs <vbs_id>/--s
 python wmi_query -i <target> -u <username> -p <password> --one_vbs <vbs_path> #vbs that only runs once
 python wmi_query -i <target> -u <username> -p <password> --execute_command <command> #To execute the command through Win32_ScheduledJob (NT 6.0), you need to wait for 1 minute
 python wmi_query -i <target> -u <username> -p <password> --clear_eventlog #cear eventlog logName:appllication,system,setup,forwardedevents,security
-python wmi_query -i <target> -u <username> -p <password> --clear_eventlog --cycle_clear# This will execute clear EventLog vbs forever(To stop use --stop <uuid>)python wmi_query -i <target> -u <username> -p <password> --execute_command2 <command> #execute command
+python wmi_query -i <target> -u <username> -p <password> --clear_eventlog --cycle_clear# This will execute clear EventLog vbs forever(To stop use --stop <uuid>)
+python wmi_query -i <target> -u <username> -p <password> --execute_command2 <command> #execute command
 python wmi_query -i <target> -u <username> -p <password> --shell #Command execution mode 2 to get a fake shell
 python wmi_query -i <target> -u <username> -p <password> --writefile <file_path> --save-to-file <save_file_path># remote file writing
 python wmi_query -i <target> -u <username> -p <password> --readfile <target_file_path> --save-to-file <save_file_path># remote file reading
@@ -87,6 +100,7 @@ python wmi_query -i <target> -u <username> -p <password> --user-rid-query #Users
 python wmi_query -i <target> -u <username> -p <password> --ridhijack 1f5(src_id),1f4(target_rid) #Rid Hijack Example
 python wmi_query -i <target> -u <username> -p <password> --set-user <rid>,0 #Disable User
 python wmi_query -i <target> -u <username> -p <password> --set-user <rid>,1 #Enable User
+python wmi_query -i <target> -u <username> -p <password> --cleartrace #Clear usage traces,On cycle clearEventLog Security
 Usage: wmi_query.py [options]
 
 Options:
@@ -137,6 +151,8 @@ Options:
                         RID hijack (--ridhijack
                         <src_user_rid>,<target_user_rid>)
   --set-user=SETUSER    Enable/Disable User(--setuser <rid>,1/0)
+  --cleartrace          Clear usage traces
+
 ```
 
 ## get process list ##
@@ -255,10 +271,7 @@ PS:
 RID劫持和启用用户/禁用用户会被某些杀毒拦截，使用时自行注意
 ![](img/360_av.png)
 
-## 更新 ##
-* 基本功能实现
-* 通过base64编码传入vbs，vbs base64解码避免中文或者其他语言造成latin-1编码问题  
-
-## 其他 ## 
-1. 纯属写来练手,感谢离爹提供的帮助，推荐小离的项目:https://github.com/XiaoliChan/wmiexec-Pro    
-2. vbs代码大量来源于网上
+## cleartrace ##
+清除残留在`ROOT\subscription:ActiveScriptEventConsumer`下的UID和C:\Windows\Temp下命令执行
+或者异常留下的txt，循环清除windows Security日志
+![](img/cleartrace.png)

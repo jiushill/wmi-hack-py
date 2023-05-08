@@ -21,4 +21,4 @@ End Function
 
 
 Set file=CreateObject("Scripting.FileSystemObject")
-file.DeleteFile(Base64Decode("QzpcVXNlcnNcaml1c2hpXOWcn+ixhi5leGU="))
+file.DeleteFile(Base64Decode("QzpcV2luZG93c1xUZW1wXDdkZGEzOWE2LWRjZDctMTFlZC05MGYyLTY4NTQ1YWFjOTg1YWVyXy50eHQ="))

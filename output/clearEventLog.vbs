@@ -1,4 +1,4 @@
-Set LogFileSet = GetObject("winmgmts:{(Backup,Security)}").ExecQuery("select * from Win32_NTEventLogFile where LogfileName='security'")
+Set LogFileSet = GetObject("winmgmts:{(Backup,Security)}").ExecQuery("select * from Win32_NTEventLogFile where LogfileName='Security'")
 
 for each Logfile in LogFileSet
 	RetVal = LogFile.ClearEventlog()
